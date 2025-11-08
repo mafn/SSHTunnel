@@ -52,7 +52,7 @@ chmod 644 /etc/ssh/sshd_config
 echo "==========================================="
 echo "SSH Tunnel Server is ready!"
 echo "==========================================="
-echo "Listening on port 22 (mapped to ${SSH_PORT:-2222} on host)"
+echo "Listening on port 2222"
 echo "Forwarded Port: 8080 (for Home Assistant access)"
 echo "==========================================="
 

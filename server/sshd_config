@@ -1,7 +1,7 @@
 # SSH Server Configuration for Reverse Tunnel
 
 # Network and Protocol
-Port 22
+Port 2222
 AddressFamily any
 ListenAddress 0.0.0.0
 ListenAddress ::
