@@ -17,6 +17,15 @@ on:
     - cron: '0 4 * * 1'
   workflow_dispatch:
 
+# NOTE: Uploading SARIF to GitHub requires the workflow to have the
+# 'security-events: write' (or read) permission. Runs from forked PRs
+# use a read-only token and cannot access the CodeQL API, so SARIF
+# uploads will fail in that case. The top-level permissions below
+# ensure the upload step can run for non-fork runs.
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   scan-server:
     name: Scan Server Image

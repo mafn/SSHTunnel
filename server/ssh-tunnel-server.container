@@ -23,7 +23,7 @@ Volume=/etc/ssh-tunnel/keys:/ssh-keys:ro
 SecurityLabelDisable=false
 NoNewPrivileges=true
 DropCapability=ALL
-AddCapability=SETUID SETGID CHOWN DAC_OVERRIDE
+AddCapability=SETUID SETGID CHOWN DAC_OVERRIDE SYS_CHROOT
 
 # Tmpfs (sshd needs /var/run writable, so no read-only filesystem)
 Tmpfs=/tmp:size=100m,noexec,nosuid,nodev

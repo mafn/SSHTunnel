@@ -34,6 +34,7 @@ ExecStart=/usr/bin/podman run \
   --cap-add SETGID \
   --cap-add CHOWN \
   --cap-add DAC_OVERRIDE \
+  --cap-add SYS_CHROOT \
   --tmpfs /tmp:size=100m,noexec,nosuid,nodev \
   ghcr.io/mafn/sshtunnel/server:latest
 
