@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM alpine:3.22
 
 # Install OpenSSH client and autossh for persistent connections
 RUN apk add --no-cache \
