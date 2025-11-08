@@ -1,0 +1,45 @@
+[Unit]
+Description=SSH Tunnel Server
+Documentation=https://github.com/mafn/SSHTunnel
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+TimeoutStartSec=0
+
+# Environment file
+EnvironmentFile=-/etc/ssh-tunnel/server.env
+
+# Working directory
+WorkingDirectory=/opt/ssh-tunnel/server
+
+# Stop the container when stopping the service
+ExecStop=/usr/bin/podman stop -t 10 ssh-tunnel-server
+
+# Remove the container when stopping the service
+ExecStopPost=/usr/bin/podman rm -f ssh-tunnel-server
+
+# Start the container
+ExecStart=/usr/bin/podman run \
+  --rm \
+  --name ssh-tunnel-server \
+  --label io.containers.autoupdate=registry \
+  -p ${SSH_PORT:-2222}:22 \
+  -p 127.0.0.1:${FORWARDED_PORT:-8080}:8080 \
+  -v /etc/ssh-tunnel/keys:/ssh-keys:ro,z \
+  -v /var/log/ssh-tunnel/server:/var/log:rw,z \
+  --env-file /etc/ssh-tunnel/server.env \
+  --security-opt no-new-privileges:true \
+  --cap-drop ALL \
+  --cap-add SETUID \
+  --cap-add SETGID \
+  --cap-add CHOWN \
+  --cap-add DAC_OVERRIDE \
+  --tmpfs /tmp:size=100m,noexec,nosuid,nodev \
+  localhost/ssh-tunnel-server:latest
+
+[Install]
+WantedBy=multi-user.target

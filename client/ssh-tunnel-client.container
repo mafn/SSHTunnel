@@ -1,0 +1,38 @@
+[Unit]
+Description=SSH Tunnel Client (Quadlet)
+Documentation=https://github.com/mafn/SSHTunnel
+After=network.target
+Wants=network-online.target
+
+[Container]
+Image=localhost/ssh-tunnel-client:latest
+ContainerName=ssh-tunnel-client
+AutoUpdate=registry
+
+# Environment file
+EnvironmentFile=/etc/ssh-tunnel/client.env
+
+# Volumes
+Volume=/etc/ssh-tunnel/client-keys:/ssh-keys:ro
+
+# Network
+Network=bridge
+
+# Security
+SecurityLabelDisable=false
+NoNewPrivileges=true
+DropCapability=ALL
+ReadOnly=true
+
+# Tmpfs mounts (required for read-only filesystem)
+Tmpfs=/tmp:size=50m,noexec,nosuid,nodev
+Tmpfs=/root/.ssh:size=10m,noexec,nosuid,nodev
+Tmpfs=/var/log:size=10m,nosuid,nodev
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target default.target

@@ -1,0 +1,28 @@
+# SSH Keys - NEVER commit
+**/ssh-keys/
+**/id_rsa*
+**/id_ed25519*
+**/ssh_host_*
+**/authorized_keys
+
+# Environment files
+.env
+**/.env
+.env.*
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

@@ -1,0 +1,26 @@
+# SSH Keys - NEVER commit these!
+**/ssh-keys/id_rsa
+**/ssh-keys/id_rsa.pub
+**/ssh-keys/ssh_host_*
+**/ssh-keys/authorized_keys
+
+# Environment files with secrets
+.env
+**/.env
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

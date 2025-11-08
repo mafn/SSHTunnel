@@ -1,0 +1,65 @@
+# SSH Server Configuration for Reverse Tunnel
+
+# Network and Protocol
+Port 22
+AddressFamily any
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+# Host Keys - Only use strong keys
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# Key Exchange Algorithms - Only modern, secure algorithms
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+
+# Ciphers - Only use strong, authenticated encryption
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+
+# MACs - Only use strong message authentication codes
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+
+# Host Key Algorithms - Prefer ED25519, allow strong RSA
+HostKeyAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-256
+
+# Public Key Algorithms - For client authentication
+PubkeyAcceptedAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-256
+
+# Logging
+SyslogFacility AUTH
+LogLevel INFO
+
+# Authentication
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+AuthorizedKeysFile /home/tunnel/.ssh/authorized_keys
+
+# Root login
+PermitRootLogin no
+
+# Tunneling and Forwarding
+GatewayPorts yes
+AllowTcpForwarding yes
+PermitTunnel yes
+X11Forwarding no
+
+# Security
+StrictModes yes
+MaxAuthTries 3
+MaxSessions 2
+
+# Keep connection alive
+ClientAliveInterval 30
+ClientAliveCountMax 3
+TCPKeepAlive yes
+
+# Performance
+UseDNS no
+
+# Subsystems
+Subsystem sftp /usr/lib/ssh/sftp-server
+
+# Only allow the tunnel user
+AllowUsers tunnel

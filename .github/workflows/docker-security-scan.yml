@@ -1,0 +1,89 @@
+name: Docker Security Scan
+
+on:
+  pull_request:
+    paths:
+      - 'server/Dockerfile'
+      - 'client/Dockerfile'
+      - '.github/workflows/docker-security-scan.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/Dockerfile'
+      - 'client/Dockerfile'
+  schedule:
+    # Run security scan weekly
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+
+jobs:
+  scan-server:
+    name: Scan Server Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build server image
+        run: |
+          cd server
+          docker build -t ssh-tunnel-server:test .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ssh-tunnel-server:test'
+          format: 'sarif'
+          output: 'trivy-server-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-server-results.sarif'
+          category: 'server-image'
+
+      - name: Run Trivy vulnerability scanner (table output)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ssh-tunnel-server:test'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
+  scan-client:
+    name: Scan Client Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build client image
+        run: |
+          cd client
+          docker build -t ssh-tunnel-client:test .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ssh-tunnel-client:test'
+          format: 'sarif'
+          output: 'trivy-client-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-client-results.sarif'
+          category: 'client-image'
+
+      - name: Run Trivy vulnerability scanner (table output)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ssh-tunnel-client:test'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
