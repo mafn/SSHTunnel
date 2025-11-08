@@ -5,7 +5,7 @@ After=network.target
 Wants=network-online.target
 
 [Container]
-Image=localhost/ssh-tunnel-client:latest
+Image=ghcr.io/mafn/sshtunnel/client:latest
 ContainerName=ssh-tunnel-client
 AutoUpdate=registry
 

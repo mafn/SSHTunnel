@@ -48,9 +48,17 @@ else
     chmod 600 /root/.ssh/id_rsa 2>/dev/null || true
 fi
 
-# Create known_hosts file
-touch /root/.ssh/known_hosts
-chmod 644 /root/.ssh/known_hosts
+# Setup known_hosts from mounted volume
+if [ -f /ssh-keys/known_hosts ]; then
+    echo "Using known_hosts from volume..."
+    cp /ssh-keys/known_hosts /root/.ssh/known_hosts
+    chmod 644 /root/.ssh/known_hosts
+else
+    echo "WARNING: No known_hosts file found in /ssh-keys/"
+    echo "Server host key will not be verified!"
+    echo "To fix: Add server's public host key to /etc/ssh-tunnel/client-keys/known_hosts"
+    touch /root/.ssh/known_hosts
+fi
 
 # Display configuration
 echo "==========================================="
@@ -68,7 +76,7 @@ TUNNEL_ARGS="-R ${REMOTE_PORT}:${LOCAL_HOMEASSISTANT_HOST:-host.containers.inter
 
 # Additional SSH options
 SSH_OPTS="-N -T"
-SSH_OPTS="$SSH_OPTS -o StrictHostKeyChecking=accept-new"
+SSH_OPTS="$SSH_OPTS -o StrictHostKeyChecking=yes"
 SSH_OPTS="$SSH_OPTS -o ServerAliveInterval=30"
 SSH_OPTS="$SSH_OPTS -o ServerAliveCountMax=3"
 SSH_OPTS="$SSH_OPTS -o ExitOnForwardFailure=yes"

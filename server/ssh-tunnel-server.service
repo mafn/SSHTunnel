@@ -13,9 +13,6 @@ TimeoutStartSec=0
 # Environment file
 EnvironmentFile=-/etc/ssh-tunnel/server.env
 
-# Working directory
-WorkingDirectory=/opt/ssh-tunnel/server
-
 # Stop the container when stopping the service
 ExecStop=/usr/bin/podman stop -t 10 ssh-tunnel-server
 
@@ -30,7 +27,6 @@ ExecStart=/usr/bin/podman run \
   -p ${SSH_PORT:-2222}:22 \
   -p 127.0.0.1:${FORWARDED_PORT:-8080}:8080 \
   -v /etc/ssh-tunnel/keys:/ssh-keys:ro,z \
-  -v /var/log/ssh-tunnel/server:/var/log:rw,z \
   --env-file /etc/ssh-tunnel/server.env \
   --security-opt no-new-privileges:true \
   --cap-drop ALL \
@@ -39,7 +35,7 @@ ExecStart=/usr/bin/podman run \
   --cap-add CHOWN \
   --cap-add DAC_OVERRIDE \
   --tmpfs /tmp:size=100m,noexec,nosuid,nodev \
-  localhost/ssh-tunnel-server:latest
+  ghcr.io/mafn/sshtunnel/server:latest
 
 [Install]
 WantedBy=multi-user.target
