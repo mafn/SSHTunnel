@@ -13,7 +13,10 @@ RUN mkdir -p /var/run/sshd \
     && chmod 700 /root/.ssh
 
 # Create a dedicated user for the tunnel
+# -D: Don't assign a password
+# passwd -u: Unlock the account (allows SSH key authentication)
 RUN adduser -D -s /bin/bash tunnel \
+    && passwd -u tunnel \
     && mkdir -p /home/tunnel/.ssh \
     && chmod 700 /home/tunnel/.ssh \
     && chown -R tunnel:tunnel /home/tunnel/.ssh
