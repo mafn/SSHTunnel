@@ -80,18 +80,14 @@ SSH_OPTS="$SSH_OPTS -o StrictHostKeyChecking=yes"
 SSH_OPTS="$SSH_OPTS -o ServerAliveInterval=30"
 SSH_OPTS="$SSH_OPTS -o ServerAliveCountMax=3"
 SSH_OPTS="$SSH_OPTS -o ExitOnForwardFailure=yes"
+SSH_OPTS="$SSH_OPTS -o LogLevel=ERROR"
 
 # Use autossh for automatic reconnection
 export AUTOSSH_GATETIME=0
 export AUTOSSH_PORT=0
-# Log to stderr for Docker/Podman
-export AUTOSSH_DEBUG=1
 
 echo "Establishing reverse SSH tunnel..."
-echo "Command: autossh $SSH_OPTS $TUNNEL_ARGS ${SERVER_USER:-tunnel}@$SERVER_HOST -p $SERVER_PORT"
-
-# SSH with verbose logging to stderr
-SSH_OPTS="$SSH_OPTS -v"
+echo "Connecting to ${SERVER_USER:-tunnel}@$SERVER_HOST:$SERVER_PORT"
 
 # Connect with autossh for automatic reconnection
 exec autossh $SSH_OPTS $TUNNEL_ARGS ${SERVER_USER:-tunnel}@$SERVER_HOST -p $SERVER_PORT
